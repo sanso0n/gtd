@@ -1,0 +1,16 @@
+{
+  "name": "GTD App",
+  "short_name": "GTD",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F7F7F5",
+  "theme_color": "#1D9E75",
+  "icons": [
+    {
+      "src": "gtd_icon_512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
