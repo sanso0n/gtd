@@ -321,8 +321,12 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 
 @media(max-width:768px){
   #menu-toggle{display:flex;align-items:center;}
-  #sidebar{position:fixed;top:0;left:0;bottom:0;z-index:100;transform:translateX(-100%);transition:transform .25s ease;width:270px;box-shadow:none;}
-  #sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,.18);}
+  /* La barra lateral se oculta del todo; al abrirla vuelve al flujo normal,
+     en paralelo al contenido, para poder usar los dos lados a la vez. */
+  #sidebar{display:none;}
+  #sidebar.open{display:flex;}
+  /* Sin capa oscura: era la que bloqueaba los toques en el lado derecho. */
+  #sidebar-overlay,#sidebar-overlay.open{display:none;}
   #topbar{padding:.75rem 1rem;}
   #view-title{font-size:15px;}
   #capture-bar{padding:.6rem 1rem;flex-wrap:wrap;gap:6px;}
@@ -555,7 +559,7 @@ function checkReminders(){
 
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebar-overlay').classList.toggle('open');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('open');}
-function setView(v){currentView=v;document.querySelectorAll('.ni').forEach(el=>el.classList.remove('active'));document.getElementById('nav-'+v)?.classList.add('active');const titles={inbox:'Bandeja de entrada',next:'Próximas acciones',projects:'Proyectos',waiting:'En espera',someday:'Algún día / quizás',archive:'Archivo'};document.getElementById('view-title').textContent=titles[v];document.getElementById('process-btn').style.display=v==='inbox'?'':'none';closeSidebar();render();}
+function setView(v){currentView=v;document.querySelectorAll('.ni').forEach(el=>el.classList.remove('active'));document.getElementById('nav-'+v)?.classList.add('active');const titles={inbox:'Bandeja de entrada',next:'Próximas acciones',projects:'Proyectos',waiting:'En espera',someday:'Algún día / quizás',archive:'Archivo'};document.getElementById('view-title').textContent=titles[v];document.getElementById('process-btn').style.display=v==='inbox'?'':'none';render();}
 
 function updateCounts(){
   const c={inbox:0,next:0,projects:0,waiting:0,someday:0,archive:archive.length};
