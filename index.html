@@ -313,6 +313,32 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
 #toast{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1A1916;color:#fff;font-size:12.5px;padding:9px 18px;border-radius:20px;z-index:2000;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.25);}
 #toast.show{display:block;animation:toastIn .2s ease;}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* MOBILE RESPONSIVE */
+#menu-toggle{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--text);padding:4px 8px;line-height:1;}
+#sidebar-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);backdrop-filter:blur(2px);z-index:99;}
+#sidebar-overlay.open{display:block;}
+
+@media(max-width:768px){
+  #menu-toggle{display:flex;align-items:center;}
+  #sidebar{position:fixed;top:0;left:0;bottom:0;z-index:100;transform:translateX(-100%);transition:transform .25s ease;width:270px;box-shadow:none;}
+  #sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,.18);}
+  #topbar{padding:.75rem 1rem;}
+  #view-title{font-size:15px;}
+  #capture-bar{padding:.6rem 1rem;flex-wrap:wrap;gap:6px;}
+  #capture-input{flex:1 1 100%;font-size:15px;padding:10px 12px;}
+  #cat-selector{flex:1 1 auto;}
+  #capture-btn{flex:1 0 auto;padding:10px 14px;font-size:13.5px;}
+  .cat-pill{padding:7px 12px;font-size:12px;}
+  #list-area{padding:.75rem 1rem;}
+  .task-row{padding:11px 12px;gap:8px;}
+  .task-row-text{font-size:14px;}
+  .setup-box{padding:1.75rem 1.5rem;}
+  .modal-box{padding:1.5rem;width:95%;}
+  .modal-opt{padding:12px 13px;}
+  #process-btn{font-size:11px;padding:5px 10px;}
+  #sync-status{top:auto;bottom:70px;right:12px;}
+}
 </style>
 </head>
 <body>
@@ -363,9 +389,10 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
       <button id="logout-btn" onclick="logout()">⏏ Cerrar sesión</button>
     </div>
   </div>
+  <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
   <div id="main">
     <div id="alert-banner"><span style="font-weight:600;flex-shrink:0">🔔 Recordatorios:</span><div id="alert-items" style="display:flex;gap:5px;flex-wrap:wrap;"></div><button id="alert-close" onclick="document.getElementById('alert-banner').classList.remove('show')">×</button></div>
-    <div id="topbar"><span id="view-title">Bandeja de entrada</span><button onclick="openProcessNext()" id="process-btn">Procesar siguiente ↗</button></div>
+    <div id="topbar"><button id="menu-toggle" onclick="toggleSidebar()">☰</button><span id="view-title">Bandeja de entrada</span><button onclick="openProcessNext()" id="process-btn">Procesar siguiente ↗</button></div>
     <div id="capture-bar">
       <input id="capture-input" placeholder="Captura cualquier idea, tarea o cosa que requiera atención..."/>
       <div id="cat-selector">
@@ -526,7 +553,9 @@ function checkReminders(){
   if(alerts.length){document.getElementById('alert-items').innerHTML=alerts.map(a=>`<span class="alert-item">${escHtml(a)}</span>`).join('');document.getElementById('alert-banner').classList.add('show');}
 }
 
-function setView(v){currentView=v;document.querySelectorAll('.ni').forEach(el=>el.classList.remove('active'));document.getElementById('nav-'+v)?.classList.add('active');const titles={inbox:'Bandeja de entrada',next:'Próximas acciones',projects:'Proyectos',waiting:'En espera',someday:'Algún día / quizás',archive:'Archivo'};document.getElementById('view-title').textContent=titles[v];document.getElementById('process-btn').style.display=v==='inbox'?'':'none';render();}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebar-overlay').classList.toggle('open');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('open');}
+function setView(v){currentView=v;document.querySelectorAll('.ni').forEach(el=>el.classList.remove('active'));document.getElementById('nav-'+v)?.classList.add('active');const titles={inbox:'Bandeja de entrada',next:'Próximas acciones',projects:'Proyectos',waiting:'En espera',someday:'Algún día / quizás',archive:'Archivo'};document.getElementById('view-title').textContent=titles[v];document.getElementById('process-btn').style.display=v==='inbox'?'':'none';closeSidebar();render();}
 
 function updateCounts(){
   const c={inbox:0,next:0,projects:0,waiting:0,someday:0,archive:archive.length};
